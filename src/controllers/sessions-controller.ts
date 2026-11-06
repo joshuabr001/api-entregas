@@ -1,8 +1,10 @@
 import { type Request, type Response } from "express"
 import { prisma } from "../database/prisma.ts"
-import { compare } from "bcrypt"
-import z, { email } from "zod"
+import bcript from "bcrypt"
+import z from "zod"
 import { AppError } from "../utils/AppError.ts"
+import { authConfig } from "../configs/auth.ts"
+import jwt from "jsonwebtoken"
 
 class SessionController {
   async create(request: Request, response: Response) {
@@ -15,17 +17,24 @@ class SessionController {
 
     const user = await prisma.user.findFirst({ where: { email } })
 
-    if(!user) {
+    if (!user) {
       throw new AppError("User not found", 401)
     }
 
-    const passwordMatched = await compare(password, user.password)
+    const passwordMatched = await bcript.compare(password, user.password)
 
-    if(!passwordMatched) {
+    if (!passwordMatched) {
       throw new AppError("Password invalid", 401)
     }
 
-    return response.json({ message: "Ok" })
+    const { secret, expiresIn } = authConfig.jwt
+
+    const token = jwt.sign({ role: user.role ?? "customer" }, secret, {
+      subject: user.id,
+      expiresIn,
+    })
+
+    return response.json({ token })
   }
 }
 

@@ -1,6 +1,6 @@
 import { type Request, type Response } from "express"
 import { prisma } from "../database/prisma.ts"
-import { hash } from "bcrypt"
+import bcript from "bcrypt"
 import z from "zod"
 import { AppError } from "../utils/AppError.ts"
 
@@ -20,7 +20,7 @@ class UserController {
       throw new AppError("User with same email alredy exists")
     }
 
-    const hashedPassword = await hash(password, 8)
+    const hashedPassword = await bcript.hash(password, 8)
 
     const user = await prisma.user.create({
       data: {
