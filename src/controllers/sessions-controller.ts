@@ -34,7 +34,9 @@ class SessionController {
       expiresIn,
     })
 
-    return response.json({ token })
+    const {password: hashedPasswordd, ...userWithOutPassword} = user
+
+    return response.json({ token, ...userWithOutPassword })
   }
 }
 
