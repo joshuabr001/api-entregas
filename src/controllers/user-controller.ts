@@ -27,6 +27,7 @@ class UserController {
         name,
         email,
         password: hashedPassword,
+        role: request.body.role,
       },
     })
 
