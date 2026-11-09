@@ -8,7 +8,7 @@ interface TokenPayload {
   sub: string
 }
 
-async function ensureAuthenticated(
+function ensureAuthenticated(
   request: Request,
   response: Response,
   next: NextFunction,
@@ -16,12 +16,12 @@ async function ensureAuthenticated(
   const token = request.headers.authorization?.split(" ")[1]
 
   if (!token) {
-    throw new AppError("Token nao infromado")
+    throw new AppError("Token não informado", 401)
   }
 
   const { role, sub: user_id } = jwt.verify(
     token,
-    authConfig.jwt.secret,  
+    authConfig.jwt.secret,
   ) as TokenPayload
 
   request.user = {
@@ -31,3 +31,5 @@ async function ensureAuthenticated(
 
   next()
 }
+
+export { ensureAuthenticated }
