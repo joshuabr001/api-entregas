@@ -19,10 +19,9 @@ function ensureAuthenticated(
     throw new AppError("Token não informado", 401)
   }
 
-  const { role, sub: user_id } = jwt.verify(
-    token,
-    authConfig.jwt.secret,
-  ) as TokenPayload
+  const payload = jwt.verify(token, authConfig.jwt.secret) as TokenPayload
+
+  const { role, sub: user_id } = payload
 
   request.user = {
     id: user_id,
