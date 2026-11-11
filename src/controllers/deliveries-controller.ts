@@ -1,6 +1,6 @@
 import { type Request, type Response } from "express"
 import { prisma } from "../database/prisma.ts"
-import z from "zod"
+import z, { includes } from "zod"
 import { AppError } from "../utils/AppError.ts"
 
 class DeliveriesController {
@@ -20,6 +20,15 @@ class DeliveriesController {
     })
 
     return response.json({ message: "Created" })
+  }
+  async index(request: Request, response: Response) {
+    const deliveries = await prisma.delivery.findMany({
+      include: {
+        user: { select: { name: true, email: true } },
+      },
+    })
+
+    return response.json(deliveries)
   }
 }
 
