@@ -5,7 +5,21 @@ import { AppError } from "../utils/AppError.ts"
 
 class DeliveriesController {
   async create(request: Request, response: Response) {
-    return response.json({ message: "Ok" })
+    const bodySchema = z.object({
+      user_id: z.uuid(),
+      description: z.string(),
+    })
+
+    const { user_id, description } = bodySchema.parse(request.body)
+
+    await prisma.delivery.create({
+      data: {
+        userId: user_id,
+        description,
+      },
+    })
+
+    return response.json({ message: "Created" })
   }
 }
 
