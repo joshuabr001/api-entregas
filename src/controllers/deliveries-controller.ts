@@ -1,10 +1,7 @@
 import { type Request, type Response } from "express"
-// import { prisma } from "../database/prisma.ts"
-// import bcript from "bcrypt"
-// import z from "zod"
-// import { AppError } from "../utils/AppError.ts"
-// import { authConfig } from "../configs/auth.ts"
-// import jwt from "jsonwebtoken"
+import { prisma } from "../database/prisma.ts"
+import z from "zod"
+import { AppError } from "../utils/AppError.ts"
 
 class DeliveriesController {
   async create(request: Request, response: Response) {
