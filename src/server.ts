@@ -2,7 +2,7 @@ import express from "express"
 import { errorHandling } from "./middlewares/error-hanlding.ts"
 import { routes } from "./routes/index.ts"
 
-const PORT = 3333
+const PORT = process.env.PORT
 const app = express()
 
 app.use(express.json())
