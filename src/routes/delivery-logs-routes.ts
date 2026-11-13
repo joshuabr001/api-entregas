@@ -13,4 +13,10 @@ deliveryLogsRouter.post(
   deliveryLogsController.create,
 )
 
+deliveryLogsRouter.get("/:delivery_id/show",
+  ensureAuthenticated,
+  verifyUserAuthorization(["sale", "customer"]),
+  deliveryLogsController.show
+)
+
 export { deliveryLogsRouter }

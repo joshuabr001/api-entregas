@@ -2,6 +2,7 @@ import { type Request, type Response } from "express"
 import { prisma } from "../database/prisma.ts"
 import z from "zod"
 import { AppError } from "../utils/AppError.ts"
+import { report } from "node:process"
 
 class DeliveryLogsController {
   async create(request: Request, response: Response) {
@@ -34,6 +35,31 @@ class DeliveryLogsController {
     })
 
     return response.json({ message: "Ok" })
+  }
+
+  async show(request: Request, response: Response) {
+    const paramsSchema = z.object({
+      delivery_id: z.uuid(),
+    })
+
+    const { delivery_id } = paramsSchema.parse(request.params)
+
+    const delivery = await prisma.delivery.findUnique({
+      where: { id: delivery_id },
+      include: {
+        user: true,
+        deliverylog: true,
+      },
+    })
+
+    if (
+      request.user?.role === "customer" &&
+      request.user.id !== delivery?.userId
+    ) {
+      throw new AppError("the user can only view their deliveries", 401)
+    }
+
+    return response.json(delivery)
   }
 }
 
